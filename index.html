@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coconut Disease Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            color: green;
+        }
+        form {
+            margin: 20px auto;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            width: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        hr {
+            border-top: 1px solid #ccc;
+            margin: 30px 0;
+        }
+        img {
+            margin-top: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        .result-box {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 10px;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .result-box h2 {
+            color: #2d572c;
+            text-align: center;
+        }
+        .result-box ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Coconut Tree Disease Detection</h1>
+
+    <form action="/predict" method="POST" enctype="multipart/form-data">
+        <h3>Upload Image:</h3>
+        <input type="file" name="image" accept="image/*" required>
+        <br><br>
+        <button type="submit">Predict Image</button>
+    </form>
+
+    <hr>
+
+    <form action="/predict_video" method="POST" enctype="multipart/form-data">
+        <h3>Upload Video:</h3>
+        <input type="file" name="video" accept="video/*" required>
+        <br><br>
+        <button type="submit">Predict Video</button>
+    </form>
+
+    <!-- Single Prediction Block -->
+    {% if prediction %}
+    <div class="result-box">
+        <h2>Predicted Disease: {{ prediction }}</h2>
+
+        {% if explanation %}
+            <p><strong>🩺 Explanation:</strong> {{ explanation }}</p>
+        {% endif %}
+
+        {% if details.water %}
+            <p><strong>💧 Water:</strong> {{ details.water }}</p>
+        {% endif %}
+
+        {% if details.fertilizer %}
+            <p><strong>🌱 Fertilizer:</strong> {{ details.fertilizer }}</p>
+        {% endif %}
+
+        {% if details.medicine %}
+            <p><strong>💊 Medicine:</strong>
+                <ul>
+                {% for med in details.medicine %}
+                    <li>{{ med }}</li>
+                {% endfor %}
+                </ul>
+            </p>
+        {% endif %}
+
+        {% if details.organic_medicine %}
+            <p><strong>🌿 Organic Medicine:</strong>
+                <ul>
+                {% for org in details.organic_medicine %}
+                    <li>{{ org }}</li>
+                {% endfor %}
+                </ul>
+            </p>
+        {% endif %}
+
+        {% if details.prevention %}
+            <p><strong>🛡️ Prevention:</strong> {{ details.prevention }}</p>
+        {% endif %}
+
+        {% if image_url %}
+            <p><strong>Uploaded Image:</strong></p>
+            <img src="{{ image_url }}" width="300">
+        {% endif %}
+    </div>
+    {% endif %}
+    <!-- Multi Prediction Block -->
+{% if multi_predictions %}
+<div class="result-box">
+    <h2>Detected Diseases:</h2>
+    {% for item in multi_predictions %}
+        <h3 style="color: brown;">{{ item.label }}</h3>
+
+        {% if item.details.explanation %}
+            <p><strong>🩺 Explanation:</strong> {{ item.details.explanation }}</p>
+        {% endif %}
+
+        {% if item.details.water %}
+            <p><strong>💧 Water:</strong> {{ item.details.water }}</p>
+        {% endif %}
+
+        {% if item.details.fertilizer %}
+            <p><strong>🌱 Fertilizer:</strong> {{ item.details.fertilizer }}</p>
+        {% endif %}
+
+        {% if item.details.medicine %}
+            <p><strong>💊 Medicine:</strong>
+                <ul>
+                {% for med in item.details.medicine %}
+                    <li>{{ med }}</li>
+                {% endfor %}
+                </ul>
+            </p>
+        {% endif %}
+
+        {% if item.details.organic_medicine %}
+            <p><strong>🌿 Organic Medicine:</strong>
+                <ul>
+                {% for org in item.details.organic_medicine %}
+                    <li>{{ org }}</li>
+                {% endfor %}
+                </ul>
+            </p>
+        {% endif %}
+
+        {% if item.details.prevention %}
+            <p><strong>🛡️ Prevention:</strong> {{ item.details.prevention }}</p>
+        {% endif %}
+
+        <hr>
+    {% endfor %}
+
+    {% if image_url %}
+        <p><strong>Uploaded Video Frame:</strong></p>
+        <img src="{{ image_url }}" alt="Video Frame" width="300">
+    {% endif %}
+</div>
+{% endif %}
+
+    
